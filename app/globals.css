@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo",
+    "Malgun Gothic", "Noto Sans KR", sans-serif;
+  /* 학교 로고 청록 계열 */
+  --color-leaf-50: #eef8f7;
+  --color-leaf-100: #d6efec;
+  --color-leaf-200: #b3e2dd;
+  --color-leaf-300: #85d0c9;
+  --color-leaf-400: #5cbfb7;
+  --color-leaf-500: #3fafa6;
+  --color-leaf-600: #2f8f88;
+  --color-leaf-700: #2a6f70;
+  --color-leaf-800: #2c5d6b;
+  --color-leaf-900: #24485a;
+  /* 중립 회색 (살짝 청록 기운) */
+  --color-soil-50: #f4f8f8;
+  --color-soil-100: #eaf1f1;
+  --color-soil-200: #dbe6e7;
+  --color-soil-700: #5f7378;
+  --color-soil-900: #1f3238;
+  /* 강조색 (로고의 종이비행기 주황) */
+  --color-tag: #e8841a;
+  --color-price: #e8462f;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  @apply bg-soil-50 text-soil-900 antialiased;
+}
+
+@layer components {
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-sm font-semibold transition
+      disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-leaf-600 text-white shadow-sm hover:bg-leaf-700 active:bg-leaf-800;
+  }
+  .btn-secondary {
+    @apply border border-soil-200 bg-white text-soil-900 hover:bg-soil-50;
+  }
+  .btn-ghost {
+    @apply text-soil-700 hover:bg-soil-100;
+  }
+  .btn-danger {
+    @apply border border-red-200 bg-white text-red-700 hover:bg-red-50;
+  }
+  .card {
+    @apply rounded-xl border border-soil-200 bg-white;
+  }
+  .input {
+    @apply w-full rounded-lg border border-soil-200 bg-white px-3.5 py-2.5 text-base outline-none
+      placeholder:text-soil-700/40 focus:border-leaf-500 focus:ring-2 focus:ring-leaf-200;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-semibold text-soil-700;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-bold;
+  }
+}
+
+@media print {
+  .print-hidden {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}
