@@ -3,6 +3,7 @@
  * 비밀 값은 노출하지 않고, 있는지 여부와 형태만 알려줍니다.
  */
 import { getDb, usingSupabase } from "@/lib/db";
+import { normalizeSupabaseUrl } from "@/lib/db/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -25,11 +26,14 @@ function keyKind(key: string): string {
 export async function GET() {
   const url = process.env.SUPABASE_URL ?? "";
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+  const normalized = normalizeSupabaseUrl(url);
 
   const info: Record<string, unknown> = {
     mode: usingSupabase ? "supabase" : "local-file",
-    supabase_url_host: host(url.trim()),
-    supabase_url_looks_ok: /^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(url.trim()),
+    supabase_url_host: host(normalized),
+    supabase_url_used: normalized,
+    supabase_url_auto_fixed: normalized !== url.trim(),
+    supabase_url_looks_ok: /^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(normalized),
     key_present: key.length > 0,
     key_length: key.trim().length,
     key_kind: keyKind(key.trim()),

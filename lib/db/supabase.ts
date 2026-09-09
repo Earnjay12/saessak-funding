@@ -10,13 +10,27 @@ import { DEFAULT_SETTINGS, normalizeProject } from "./types";
 const BUCKET = "photos";
 const SETTINGS_KEY = "funding";
 
+/**
+ * SUPABASE_URL 을 "https://xxxx.supabase.co" 형태로 정리합니다.
+ * 대시보드의 REST URL(…/rest/v1)을 복사해 넣어도 동작하도록 뒤에 붙은 경로와 공백을 떼어냅니다.
+ */
+export function normalizeSupabaseUrl(raw: string | undefined): string {
+  const t = (raw ?? "").trim();
+  try {
+    return new URL(t).origin;
+  } catch {
+    return t;
+  }
+}
+
 let client: SupabaseClient | null = null;
 function sb(): SupabaseClient {
   if (!client) {
-    // 환경 변수에 실수로 붙은 공백·줄바꿈을 제거합니다.
-    client = createClient(process.env.SUPABASE_URL!.trim(), process.env.SUPABASE_SERVICE_ROLE_KEY!.trim(), {
-      auth: { persistSession: false, autoRefreshToken: false },
-    });
+    client = createClient(
+      normalizeSupabaseUrl(process.env.SUPABASE_URL),
+      (process.env.SUPABASE_SERVICE_ROLE_KEY ?? "").trim(),
+      { auth: { persistSession: false, autoRefreshToken: false } },
+    );
   }
   return client;
 }
