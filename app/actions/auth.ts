@@ -21,8 +21,15 @@ export async function loginStudent(_prev: LoginState, form: FormData): Promise<L
   if (!grade || !klass || !number) return { error: "학년, 반, 번호를 숫자로 입력해 주세요." };
   if (!password) return { error: "비밀번호를 입력해 주세요." };
 
-  const db = await getDb();
-  const student = await db.getStudent(studentId(grade, klass, number));
+  let student;
+  try {
+    const db = await getDb();
+    student = await db.getStudent(studentId(grade, klass, number));
+  } catch (e) {
+    return {
+      error: `데이터베이스에 연결하지 못했어요. 선생님께 알려 주세요. (${e instanceof Error ? e.message : String(e)})`,
+    };
+  }
   if (!student || student.password !== password) {
     return { error: "학년·반·번호 또는 비밀번호가 맞지 않아요. 나눠받은 카드를 다시 확인해 주세요." };
   }

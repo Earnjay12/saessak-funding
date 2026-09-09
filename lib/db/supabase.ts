@@ -13,7 +13,8 @@ const SETTINGS_KEY = "funding";
 let client: SupabaseClient | null = null;
 function sb(): SupabaseClient {
   if (!client) {
-    client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    // 환경 변수에 실수로 붙은 공백·줄바꿈을 제거합니다.
+    client = createClient(process.env.SUPABASE_URL!.trim(), process.env.SUPABASE_SERVICE_ROLE_KEY!.trim(), {
       auth: { persistSession: false, autoRefreshToken: false },
     });
   }

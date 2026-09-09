@@ -90,7 +90,7 @@ npx vercel --prod
 터미널로 직접 실행하려면 이 폴더로 이동한 뒤 한 줄씩 입력합니다. (Windows PowerShell 에서는 `&&` 로 두 명령을 잇는 문법이 안 됩니다.)
 
 ```bash
-cd C:\Users\jaeen\Documents\saessak-funding
+cd "C:\Users\jaeen\Documents\Claude Code\saessak-funding"
 ```
 
 ```bash
