@@ -15,9 +15,24 @@ function host(url: string): string | null {
   }
 }
 
+/** legacy JWT 키 안에 적힌 역할(anon / service_role)만 읽어냅니다. 키 자체는 노출하지 않습니다. */
+function jwtRole(key: string): string | null {
+  try {
+    const payload = JSON.parse(Buffer.from(key.split(".")[1], "base64url").toString("utf8"));
+    return typeof payload.role === "string" ? payload.role : null;
+  } catch {
+    return null;
+  }
+}
+
 function keyKind(key: string): string {
   if (!key) return "없음";
-  if (key.startsWith("eyJ")) return "legacy JWT (service_role 또는 anon)";
+  if (key.startsWith("eyJ")) {
+    const role = jwtRole(key);
+    if (role === "service_role") return "legacy service_role key (정상)";
+    if (role === "anon") return "legacy anon key (잘못됨: service_role 키가 필요)";
+    return "legacy JWT (역할 불명)";
+  }
   if (key.startsWith("sb_secret_")) return "secret key (정상)";
   if (key.startsWith("sb_publishable_")) return "publishable key (잘못됨: secret key 가 필요)";
   return "알 수 없는 형식";
