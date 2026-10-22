@@ -39,7 +39,10 @@ export default async function LoginPage({
             곳에 나눠 심어도 돼요.
           </li>
           <li>
-            <span className="font-semibold text-leaf-700">3.</span> {UNIT}을 가장 많이 받은 상품이 1위가 돼요!
+            <span className="font-semibold text-leaf-700">3.</span> 심을 때는 왜 그만큼 심는지 이유를 꼭 적어요.
+          </li>
+          <li>
+            <span className="font-semibold text-leaf-700">4.</span> {UNIT}을 가장 많이 받은 상품이 1위가 돼요!
           </li>
         </ol>
       </section>

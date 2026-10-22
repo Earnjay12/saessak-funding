@@ -34,6 +34,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <nav className="flex gap-1 overflow-x-auto px-3 pb-2 text-sm">
           {[
             ["/admin", "현황"],
+            ["/admin/feedback", "심은 이유"],
             ["/admin/projects", "상품"],
             ["/admin/students", "학생 계정"],
           ].map(([href, label]) => (

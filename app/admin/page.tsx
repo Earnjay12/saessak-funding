@@ -167,8 +167,11 @@ export default async function AdminHome() {
 
       <section className="card border-red-100 p-5">
         <h2 className="text-base font-bold text-red-700">초기화</h2>
+        <p className="mt-1 text-sm font-semibold text-red-700">
+          지우기 전에 <a href="/admin/feedback/export" className="underline">심은 이유 CSV</a>를 내려받아 두세요.
+        </p>
         <p className="mt-1 text-sm text-soil-700">
-          모든 펀딩 기록을 지우고 학생 잔액을 {UNIT} {STARTING_BALANCE}개로 되돌립니다. 학생 계정과 상품은 그대로
+          모든 펀딩 기록(심은 이유 포함)을 지우고 학생 잔액을 {UNIT} {STARTING_BALANCE}개로 되돌립니다. 학생 계정과 상품은 그대로
           남습니다. 다음 학기나 다른 반에서 다시 쓸 때 사용하세요.
         </p>
         <form action={resetPledges} className="mt-3">

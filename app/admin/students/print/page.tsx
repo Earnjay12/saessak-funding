@@ -67,9 +67,9 @@ export default async function PrintCards({
             <ol className="mt-3 space-y-0.5 text-[11px] leading-snug text-soil-700">
               <li>1. 위 주소로 들어가 학년·반·번호와 비밀번호를 입력해요.</li>
               <li>
-                2. {UNIT} {STARTING_BALANCE}개를 받아요. 마음에 드는 프로젝트에 나눠 심어요.
+                2. {UNIT} {STARTING_BALANCE}개를 받아요. 마음에 드는 상품에 나눠 심어요.
               </li>
-              <li>3. 마감 전에는 취소하고 다른 곳에 심을 수 있어요.</li>
+              <li>3. 심을 때는 이유를 꼭 적어요. 마감 전에는 취소할 수 있어요.</li>
             </ol>
           </div>
         ))}

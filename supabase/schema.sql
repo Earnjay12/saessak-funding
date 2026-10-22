@@ -8,7 +8,7 @@ create table if not exists students (
   class int not null,
   number int not null,
   password text not null,
-  balance int not null default 100,
+  balance int not null default 5,
   created_at timestamptz not null default now()
 );
 
@@ -41,8 +41,10 @@ create table if not exists pledges (
   student_id text not null references students(id) on delete cascade,
   project_id uuid not null references projects(id) on delete cascade,
   amount int not null check (amount > 0),
+  reason text not null default '',          -- 심은 이유
   created_at timestamptz not null default now()
 );
+alter table pledges add column if not exists reason text not null default '';
 
 create index if not exists pledges_project_idx on pledges(project_id);
 create index if not exists pledges_student_idx on pledges(student_id);
@@ -74,8 +76,9 @@ as $$
   select coalesce((select (value->>'funding_open')::boolean from settings where key = 'funding'), true);
 $$;
 
--- 펀딩하기: 잔액 확인과 차감, 기록 추가를 한 번에 처리합니다.
-create or replace function make_pledge(p_student_id text, p_project_id uuid, p_amount int)
+-- 펀딩하기: 잔액 확인과 차감, 기록(이유 포함) 추가를 한 번에 처리합니다.
+drop function if exists make_pledge(text, uuid, int);
+create or replace function make_pledge(p_student_id text, p_project_id uuid, p_amount int, p_reason text default '')
 returns json
 language plpgsql
 as $$
@@ -101,7 +104,8 @@ begin
   end if;
 
   update students set balance = balance - p_amount where id = p_student_id;
-  insert into pledges (student_id, project_id, amount) values (p_student_id, p_project_id, p_amount);
+  insert into pledges (student_id, project_id, amount, reason)
+  values (p_student_id, p_project_id, p_amount, coalesce(left(trim(p_reason), 300), ''));
   return json_build_object('ok', true, 'balance', v_balance - p_amount);
 end
 $$;
@@ -165,7 +169,7 @@ alter table students enable row level security;
 alter table projects enable row level security;
 alter table pledges enable row level security;
 alter table settings enable row level security;
-revoke execute on function make_pledge(text, uuid, int) from anon, authenticated;
+revoke execute on function make_pledge(text, uuid, int, text) from anon, authenticated;
 revoke execute on function cancel_pledge(text, uuid) from anon, authenticated;
 revoke execute on function delete_project_with_refund(uuid) from anon, authenticated;
 revoke execute on function reset_pledges(int) from anon, authenticated;

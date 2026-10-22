@@ -6,7 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import type { DB, Pledge, PledgeResult, Project, ProjectWithStats, Settings, Student } from "./types";
-import { DEFAULT_SETTINGS, normalizeProject } from "./types";
+import { DEFAULT_SETTINGS, normalizePledge, normalizeProject } from "./types";
 
 type Data = { students: Student[]; projects: Project[]; pledges: Pledge[]; settings: Settings };
 
@@ -21,7 +21,7 @@ function load(): Data {
     return {
       students: d.students ?? [],
       projects: (d.projects ?? []).map(normalizeProject),
-      pledges: d.pledges ?? [],
+      pledges: (d.pledges ?? []).map(normalizePledge),
       settings: { ...DEFAULT_SETTINGS, ...(d.settings ?? {}) },
     };
   } catch {
@@ -130,7 +130,7 @@ export const localDb: DB = {
       )
       .sort((a, b) => b.created_at.localeCompare(a.created_at));
   },
-  async makePledge(studentId, projectId, amount): Promise<PledgeResult> {
+  async makePledge(studentId, projectId, amount, reason): Promise<PledgeResult> {
     if (!Number.isInteger(amount) || amount <= 0) return { ok: false, error: "invalid_amount" };
     const d = load();
     if (!d.settings.funding_open) return { ok: false, error: "closed" };
@@ -145,6 +145,7 @@ export const localDb: DB = {
       student_id: studentId,
       project_id: projectId,
       amount,
+      reason,
       created_at: new Date().toISOString(),
     });
     save(d);

@@ -53,7 +53,7 @@ export default async function MePage() {
             {pledges.map((p) => {
               const project = byId.get(p.project_id);
               return (
-                <li key={p.id} className="flex items-center justify-between gap-3 px-4 py-3">
+                <li key={p.id} className="flex items-start justify-between gap-3 px-4 py-3">
                   <div className="min-w-0">
                     <Link
                       href={`/projects/${p.project_id}`}
@@ -64,6 +64,7 @@ export default async function MePage() {
                     <div className="text-xs text-soil-700">
                       {UNIT} {p.amount}개 · {fmtDateTime(p.created_at)}
                     </div>
+                    {p.reason && <p className="mt-1 whitespace-pre-wrap text-sm">“{p.reason}”</p>}
                   </div>
                   {open && (
                     <form action={cancelPledge}>

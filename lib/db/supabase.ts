@@ -5,7 +5,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { randomUUID } from "node:crypto";
 import type { DB, Pledge, PledgeResult, Project, ProjectWithStats, Settings, Student } from "./types";
-import { DEFAULT_SETTINGS, normalizeProject } from "./types";
+import { DEFAULT_SETTINGS, normalizePledge, normalizeProject } from "./types";
 
 const BUCKET = "photos";
 const SETTINGS_KEY = "funding";
@@ -122,13 +122,14 @@ export const supabaseDb: DB = {
     if (filter.projectId) q = q.eq("project_id", filter.projectId);
     const { data, error } = await q;
     if (error) fail(error, "listPledges");
-    return (data ?? []) as Pledge[];
+    return ((data ?? []) as Pledge[]).map(normalizePledge);
   },
-  async makePledge(studentId, projectId, amount) {
+  async makePledge(studentId, projectId, amount, reason) {
     const { data, error } = await sb().rpc("make_pledge", {
       p_student_id: studentId,
       p_project_id: projectId,
       p_amount: amount,
+      p_reason: reason,
     });
     if (error) fail(error, "makePledge");
     return data as PledgeResult;

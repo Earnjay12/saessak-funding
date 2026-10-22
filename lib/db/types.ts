@@ -12,9 +12,9 @@ export type Student = {
 export type Project = {
   id: string;
   title: string; // 상품명
-  summary: string; // 홍보 문구 (예: "아삭하고! 달콤한!")
-  creator: string; // 제작자 (예: "2학년 3반 김새싹")
-  specs: string; // 상품 정보, 한 줄에 하나 "품종: 홍로"
+  summary: string; // 홍보 문구
+  creator: string; // 제작자
+  specs: string; // 상품 정보, 한 줄에 하나 "항목: 내용"
   images: string[]; // 사진 URL 목록 (첫 장이 대표)
   created_at: string;
 };
@@ -26,6 +26,7 @@ export type Pledge = {
   student_id: string;
   project_id: string;
   amount: number;
+  reason: string; // 심은 이유
   created_at: string;
 };
 
@@ -58,7 +59,7 @@ export interface DB {
   deleteProject(id: string): Promise<void>;
 
   listPledges(filter?: { studentId?: string; projectId?: string }): Promise<Pledge[]>;
-  makePledge(studentId: string, projectId: string, amount: number): Promise<PledgeResult>;
+  makePledge(studentId: string, projectId: string, amount: number, reason: string): Promise<PledgeResult>;
   cancelPledge(studentId: string, pledgeId: string): Promise<PledgeResult>;
   /** 모든 펀딩 기록을 지우고 학생 잔액을 시작 자금으로 되돌립니다. */
   resetPledges(startingBalance: number): Promise<void>;
@@ -84,4 +85,14 @@ export function normalizeProject(
     images,
     created_at: raw.created_at ?? new Date(0).toISOString(),
   };
+}
+
+export function normalizePledge(raw: Partial<Pledge> & Omit<Pledge, "reason">): Pledge {
+  return { ...raw, reason: raw.reason ?? "" };
+}
+
+/** "2-3-15" → { grade: 2, class: 3, number: 15 } */
+export function parseStudentId(id: string): { grade: number; class: number; number: number } | null {
+  const m = id.match(/^(\d+)-(\d+)-(\d+)$/);
+  return m ? { grade: Number(m[1]), class: Number(m[2]), number: Number(m[3]) } : null;
 }

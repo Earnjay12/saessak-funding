@@ -102,15 +102,21 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
         ) : (
           <ul className="divide-y divide-soil-100">
             {myPledges.map((p) => (
-              <li key={p.id} className="flex items-center justify-between py-2 text-sm">
-                <span>
-                  <b>{p.amount}개</b> <span className="text-soil-700">· {fmtDateTime(p.created_at)}</span>
-                </span>
+              <li key={p.id} className="flex items-start justify-between gap-3 py-2.5 text-sm">
+                <div className="min-w-0">
+                  <div>
+                    <b>
+                      {UNIT_EMOJI} {p.amount}개
+                    </b>{" "}
+                    <span className="text-soil-700">· {fmtDateTime(p.created_at)}</span>
+                  </div>
+                  {p.reason && <p className="mt-0.5 whitespace-pre-wrap text-soil-900">“{p.reason}”</p>}
+                </div>
                 {open && (
                   <form action={cancelPledge}>
                     <input type="hidden" name="pledge_id" value={p.id} />
                     <input type="hidden" name="project_id" value={project.id} />
-                    <button type="submit" className="btn-ghost px-2 py-1 text-xs text-red-600">
+                    <button type="submit" className="btn-ghost shrink-0 px-2 py-1 text-xs text-red-600">
                       취소
                     </button>
                   </form>
